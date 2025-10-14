@@ -42,7 +42,7 @@ stock-data-project/
 
 1. **Clone or navigate to the project directory**:
    ```bash
-   cd /home/bruno/learning/stock-data/stock-data-project
+   cd /your-repository/
    ```
 
 2. **Create a virtual environment**:
