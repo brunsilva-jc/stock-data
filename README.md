@@ -29,10 +29,18 @@ stock-data-project/
 │   └── models/
 │       ├── __init__.py
 │       └── currency.py      # Data models and processors
+├── assets/
+│   └── crypto.png           # Dashboard logo
 ├── tests/
 │   ├── __init__.py
 │   └── test_main.py         # Test suite
+├── streamlit_app.py         # Streamlit dashboard application
+├── Dockerfile               # Docker container configuration
+├── docker-compose.yml       # Docker Compose orchestration
+├── .dockerignore            # Docker build exclusions
+├── Makefile                 # Convenience commands for Docker
 ├── .env                     # Environment variables (not in git)
+├── .env.example             # Environment template (safe for git)
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -63,6 +71,162 @@ stock-data-project/
    DEFAULT_SYMBOL=BTC
    DEFAULT_MARKET=USD
    ```
+
+## Docker Deployment
+
+The application is fully containerized and ready for Docker deployment. This is the **recommended method** for production environments and cloud deployments.
+
+### Prerequisites
+
+- Docker Engine 20.10+ installed
+- Docker Compose V2 installed
+- (Optional) Make utility for convenience commands
+
+### Quick Start with Docker
+
+1. **Clone the repository**:
+   ```bash
+   git clone <your-repo-url>
+   cd stock-data-project
+   ```
+
+2. **Configure environment variables**:
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your AlphaVantage API key
+   ```
+
+3. **Build and run with Docker Compose**:
+   ```bash
+   docker-compose up -d
+   ```
+
+   The dashboard will be available at `http://localhost:8501`
+
+4. **View logs**:
+   ```bash
+   docker-compose logs -f streamlit
+   ```
+
+5. **Stop the application**:
+   ```bash
+   docker-compose down
+   ```
+
+### Using Makefile (Convenience Commands)
+
+If you have `make` installed, you can use these convenient commands:
+
+```bash
+make build      # Build Docker image
+make up         # Start containers in detached mode
+make dev        # Start in foreground (see logs)
+make down       # Stop containers
+make restart    # Restart containers
+make logs       # View logs
+make shell      # Open shell in container
+make clean      # Remove all containers, images, and volumes
+make help       # Show all available commands
+```
+
+### Docker Configuration Files
+
+- **Dockerfile**: Production-ready multi-stage build with non-root user
+- **docker-compose.yml**: Orchestration configuration with health checks
+- **.dockerignore**: Optimizes build by excluding unnecessary files
+- **.env.example**: Template for environment variables
+
+### Production Deployment
+
+#### Security Best Practices
+
+1. **Never commit .env file** - It contains your API key
+2. **Use secrets management** in production:
+   - AWS Secrets Manager (AWS ECS/Fargate)
+   - Google Secret Manager (Google Cloud Run)
+   - Azure Key Vault (Azure Container Instances)
+   - Kubernetes Secrets (K8s deployments)
+
+3. **Environment Variables in Production**:
+   ```bash
+   # Pass directly in docker-compose or cloud platform
+   ALPHAVANTAGE_API_KEY=your_production_key
+   DEFAULT_SYMBOL=BTC
+   DEFAULT_MARKET=USD
+   ```
+
+#### Cloud Deployment Options
+
+**1. AWS (Amazon Web Services)**
+- **ECS Fargate**: Serverless container deployment
+  ```bash
+  # Push image to ECR
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
+  docker tag crypto-dashboard:latest <account-id>.dkr.ecr.us-east-1.amazonaws.com/crypto-dashboard:latest
+  docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/crypto-dashboard:latest
+  ```
+- Use AWS Secrets Manager for API key
+- Configure health checks using the built-in endpoint
+
+**2. Google Cloud Platform**
+- **Cloud Run**: Fully managed serverless platform
+  ```bash
+  # Build and deploy
+  gcloud builds submit --tag gcr.io/PROJECT_ID/crypto-dashboard
+  gcloud run deploy crypto-dashboard --image gcr.io/PROJECT_ID/crypto-dashboard --platform managed
+  ```
+- Auto-scaling based on traffic
+- Pay only for actual usage
+
+**3. Azure**
+- **Azure Container Instances**: Simple container deployment
+  ```bash
+  az container create \
+    --resource-group myResourceGroup \
+    --name crypto-dashboard \
+    --image crypto-dashboard:latest \
+    --dns-name-label crypto-dashboard \
+    --ports 8501
+  ```
+
+**4. DigitalOcean**
+- **App Platform**: Easy deployment with git integration
+- Automatic HTTPS and built-in CDN
+
+**5. Heroku**
+- **Container Registry**:
+  ```bash
+  heroku container:push web -a your-app-name
+  heroku container:release web -a your-app-name
+  ```
+
+#### Health Checks
+
+The Docker container includes built-in health checks:
+- Endpoint: `http://localhost:8501/_stcore/health`
+- Interval: 30 seconds
+- Timeout: 10 seconds
+- Retries: 3
+
+This allows container orchestrators (ECS, K8s, etc.) to automatically monitor and restart unhealthy containers.
+
+#### Resource Limits
+
+For production, consider setting resource limits in `docker-compose.yml`:
+
+```yaml
+services:
+  streamlit:
+    # ... other config ...
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+```
 
 ## Running the Application
 

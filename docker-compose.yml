@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crypto-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY}
+      - DEFAULT_SYMBOL=${DEFAULT_SYMBOL:-BTC}
+      - DEFAULT_MARKET=${DEFAULT_MARKET:-USD}
+    env_file:
+      - .env
+    volumes:
+      # Mount code for development (comment out for production)
+      - ./streamlit_app.py:/app/streamlit_app.py
+      - ./app:/app/app
+      - ./assets:/app/assets
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - crypto-network
+
+  # Optional: FastAPI service (uncomment if needed)
+  # fastapi:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: crypto-api
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - ALPHAVANTAGE_API_KEY=${ALPHAVANTAGE_API_KEY}
+  #     - DEFAULT_SYMBOL=${DEFAULT_SYMBOL:-BTC}
+  #     - DEFAULT_MARKET=${DEFAULT_MARKET:-USD}
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./app:/app/app
+  #   restart: unless-stopped
+  #   command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  #   networks:
+  #     - crypto-network
+
+networks:
+  crypto-network:
+    driver: bridge

@@ -165,7 +165,7 @@ def main():
     """Main Streamlit application."""
 
     # Sidebar logo and configuration
-    st.sidebar.image("assets/crypto.png", width=100)
+    #st.sidebar.image("assets/crypto.png", width=100)
     st.sidebar.markdown("---")
     st.sidebar.header("Configuration")
 
