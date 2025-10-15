@@ -66,6 +66,27 @@ stock-data-project/
 
 ## Running the Application
 
+### Option 1: Streamlit Dashboard (Recommended for Visualization)
+
+Start the Streamlit dashboard for interactive data visualization:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+The dashboard will be available at `http://localhost:8501`
+
+**Features:**
+- Interactive cryptocurrency selection (BTC, ETH, LTC, XRP, BCH, ADA, DOT, LINK)
+- Market currency selection (USD, EUR, GBP, JPY, CNY)
+- Real-time price and volume charts
+- Key metrics dashboard with daily changes
+- Weekly and monthly statistical analysis
+- Recent OHLCV data table
+- Data caching to respect API rate limits
+
+### Option 2: FastAPI Server (For API Access)
+
 Start the FastAPI server using uvicorn:
 
 ```bash
@@ -196,9 +217,49 @@ AlphaVantage free tier has the following limits:
 
 The application includes error handling for rate limit responses.
 
+## Streamlit Dashboard
+
+The project includes a comprehensive Streamlit dashboard for visualizing cryptocurrency data:
+
+### Dashboard Components
+
+1. **Sidebar Configuration**
+   - Cryptocurrency selector (8 popular cryptocurrencies)
+   - Market currency selector (USD, EUR, GBP, JPY, CNY)
+   - Refresh button to clear cache and fetch new data
+
+2. **Key Metrics Cards**
+   - Latest price with daily change indicator
+   - Daily change percentage
+   - Trading volume
+   - Last update timestamp
+
+3. **Interactive Charts**
+   - Price trend line chart with high/low ranges
+   - Trading volume bar chart
+   - Plotly-powered interactive visualizations
+
+4. **Statistical Analysis**
+   - Weekly statistics (7-day averages, highs, lows)
+   - Monthly statistics (30-day averages, highs, lows)
+
+5. **Data Tables**
+   - Recent OHLCV (Open, High, Low, Close, Volume) data table
+   - Last 10 days of detailed price information
+
+### Features
+
+- **Data Caching**: 5-minute cache to minimize API calls and respect rate limits
+- **Error Handling**: Graceful handling of API errors and rate limit messages
+- **Responsive Design**: Clean, professional interface with wide layout
+- **Real-time Updates**: Manual refresh option to fetch latest data
+
 ## Technologies Used
 
 - **FastAPI**: Modern, fast web framework for building APIs
+- **Streamlit**: Framework for creating interactive data dashboards
+- **Plotly**: Interactive visualization library for charts
+- **Pandas**: Data manipulation and analysis
 - **Uvicorn**: ASGI server for running FastAPI applications
 - **HTTPX**: Async HTTP client for API requests
 - **Pydantic**: Data validation and settings management
