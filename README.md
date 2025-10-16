@@ -65,9 +65,9 @@ stock-data-project/
    ```
 
 4. **Configure environment variables**:
-   The `.env` file is already created with your AlphaVantage API key. You can modify it if needed:
+   The `.env` file need this 3 variables below:
    ```env
-   ALPHAVANTAGE_API_KEY=F6YFCLQZ340BZ9ND
+   ALPHAVANTAGE_API_KEY=YourAPIKEYHERE
    DEFAULT_SYMBOL=BTC
    DEFAULT_MARKET=USD
    ```
