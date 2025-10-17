@@ -16,13 +16,10 @@ class Settings(BaseSettings):
     alphavantage_base_url: str = "https://www.alphavantage.co/query"
 
     # Database configuration
-    database_url: str = Field(
-        default="postgresql://crypto_user:crypto_pass@localhost:5432/crypto_db",
-        alias="DATABASE_URL"
-    )
-    postgres_db: str = Field(default="crypto_db", alias="POSTGRES_DB")
-    postgres_user: str = Field(default="crypto_user", alias="POSTGRES_USER")
-    postgres_password: str = Field(default="crypto_pass", alias="POSTGRES_PASSWORD")
+    database_url: str = Field(..., alias="DATABASE_URL")
+    postgres_db: str = Field(..., alias="POSTGRES_DB")
+    postgres_user: str = Field(..., alias="POSTGRES_USER")
+    postgres_password: str = Field(..., alias="POSTGRES_PASSWORD")
 
     # Database connection pool settings
     db_pool_size: int = Field(default=5, alias="DB_POOL_SIZE")
